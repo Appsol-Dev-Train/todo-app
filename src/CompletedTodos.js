@@ -4,7 +4,7 @@ import TodoItem from './TodoItem';
 function CompletedTodos({ todos }) {
   return (
     <div>
-      <h1>Completed Tasks</h1>
+      <h1 className="text-3xl pt-3 pl-3 mb-4 text-black">Completed</h1>
       {todos.length === 0 ? (
         <p>No completed tasks</p>
       ) : (

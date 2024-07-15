@@ -22,9 +22,9 @@ function TodoItem({ todo, index, toggleTodo, deleteTodo, editTodo }) {
   };
 
   return (
-    <li>
+    <li className="flex justify-between items-center p-2 border-b border-gray-300 bg-opacity-60 bg-black mb-4 rounded">
       {isEditing ? (
-        <div>
+        <div className="flex items-center gap-4">
           <input
             type="text"
             value={newText}
@@ -32,31 +32,37 @@ function TodoItem({ todo, index, toggleTodo, deleteTodo, editTodo }) {
             onKeyPress={handleKeyPress}
             autoFocus
             disabled={todo.completed}
+            className="p-2 text-base border border-gray-300 rounded"
           />
           <DatePicker
             selected={newDueDate}
             onChange={(date) => setNewDueDate(date)}
             placeholderText="Select due date"
             disabled={todo.completed}
+            className="p-2 text-base border border-gray-300 rounded"
           />
-          <button onClick={handleEdit}>{isEditing ? 'Save' : 'Edit'}</button>
+          <button onClick={handleEdit} className="bg-blue-600 text-white px-3 py-1 rounded cursor-pointer">
+            {isEditing ? 'Save' : 'Edit'}
+          </button>
         </div>
       ) : (
-        <span
-          style={{ textDecoration: todo.completed ? 'line-through' : 'none', cursor: 'pointer' }}
-          onClick={toggleTodo}
-        >
-          {todo.text} {todo.dueDate && <span> - Due: {format(todo.dueDate, 'MM/dd/yyyy')}</span>}
-        </span>
+        <div className="flex items-center gap-4" onClick={toggleTodo} style={{ textDecoration: todo.completed ? 'line-through' : 'none', cursor: 'pointer' }}>
+          <span>{todo.text}</span>
+          {todo.dueDate && <span>- Due: {format(todo.dueDate, 'MM/dd/yyyy')}</span>}
+        </div>
       )}
-      <div className="todo-buttons">
+      <div className="todo-buttons flex gap-4 items-center">
         {!todo.completed && (
-          <button onClick={() => setIsEditing(true)}>Edit</button>
+          <button onClick={() => setIsEditing(!isEditing)} className="bg-blue-600 text-white px-3 py-1 rounded cursor-pointer">
+            Edit
+          </button>
         )}
-        <button onClick={() => deleteTodo(index)}>Delete</button>
+        <button onClick={() => deleteTodo(index)} className="bg-blue-600 text-white px-3 py-1 rounded cursor-pointer">
+          Delete
+        </button>
       </div>
     </li>
   );
-}
+};
 
 export default TodoItem;
