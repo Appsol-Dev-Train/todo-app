@@ -21,7 +21,7 @@ function App() {
   const addTodo = (e) => {
     e.preventDefault();
     if (input.trim()) {
-      const newTodo = { text: input, completed: false, dueDate };
+      const newTodo = { text: input, completed: false, dueDate, createdAt: new Date() };
       axios.post('http://localhost:5000/todos', newTodo)
         .then(response => setTodos([...todos, response.data]))
         .catch(error => console.error('Error adding todo:', error));
@@ -64,14 +64,33 @@ function App() {
       .catch(error => console.error('Error editing todo:', error));
   };
 
+  // Function to categorize tasks into "Today" and "Previous"
+  const categorizeTasks = () => {
+    const today = new Date().setHours(0, 0, 0, 0);
+    const todayTasks = [];
+    const previousTasks = [];
+
+    todos.forEach(todo => {
+      const todoDate = new Date(todo.createdAt).setHours(0, 0, 0, 0);
+      if (todoDate === today) {
+        todayTasks.push(todo);
+      } else {
+        previousTasks.push(todo);
+      }
+    });
+
+    return { todayTasks, previousTasks };
+  };
+
+  // Get categorized tasks
+  const { todayTasks, previousTasks } = categorizeTasks();
+
   return (
     <Router>
       <div className="flex h-screen font-sans text-white">
-
         {/* Sidebar */}
         <div className="w-64 h-full bg-gray-900 pt-5 flex flex-col items-center fixed top-0 left-0">
           <h1 className="m-0 p-2 text-3xl text-white">Todo-List</h1>
-          
           <NavLink to="/" exact="true" className={({ isActive }) => (isActive ? 'p-4 text-white text-left w-[230px] flex items-center bg-gray-700' : 'p-4 text-white text-left w-[230px] flex items-center hover:bg-gray-700')}>
             <span>Tasks</span>
             <span className="bg-blue-600 rounded-full px-2 py-1 ml-auto">{todos.filter(todo => !todo.completed).length}</span>
@@ -89,7 +108,7 @@ function App() {
               path="/"
               element={
                 <div>
-                  <h1 className="text-3xl pt-3 pl-3 mb-4 text-black">My Day</h1>
+                  <h1 className="text-3xl pt-3 pl-3 mb-4 text-black">Todo's</h1>
                   <form onSubmit={addTodo} className="mb-5 flex">
                     <input
                       type="text"
@@ -106,7 +125,12 @@ function App() {
                     />
                     <button type="submit" className="p-2 text-lg ml-2 cursor-pointer bg-blue-600 text-white rounded">Add</button>
                   </form>
-                  <TodoList todos={todos} toggleTodo={toggleTodo} deleteTodo={deleteTodo} editTodo={editTodo} />
+
+                  <h2 className="text-2xl mb-4 pl-3 text-black">My Day</h2>
+                  <TodoList todos={todayTasks} toggleTodo={toggleTodo} deleteTodo={deleteTodo} editTodo={editTodo} />
+
+                  <h2 className="text-2xl mt-6 mb-4 pl-3 text-black">Previous Tasks</h2>
+                  <TodoList todos={previousTasks} toggleTodo={toggleTodo} deleteTodo={deleteTodo} editTodo={editTodo} />
                 </div>
               }
             />
