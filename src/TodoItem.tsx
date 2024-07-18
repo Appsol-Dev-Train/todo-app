@@ -1,21 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, KeyboardEvent } from 'react';
 import { format } from 'date-fns';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-function TodoItem({ todo, index, toggleTodo, deleteTodo, editTodo }) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [newText, setNewText] = useState(todo.text);
-  const [newDueDate, setNewDueDate] = useState(todo.dueDate);
+interface Todo {
+  id: number;
+  text: string;
+  completed: boolean;
+  dueDate: Date | null;
+  createdAt: Date;
+}
+
+interface TodoItemProps {
+  todo: Todo;
+  index?: number;
+  toggleTodo: () => void;
+  deleteTodo: () => void;
+  editTodo: (index: number, newText: string, newDueDate: Date | null) => void;
+  disableActions?: boolean;
+}
+
+const TodoItem: React.FC<TodoItemProps> = ({ todo, index, toggleTodo, deleteTodo, editTodo, disableActions }) => {
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [newText, setNewText] = useState<string>(todo.text);
+  const [newDueDate, setNewDueDate] = useState<Date | null>(todo.dueDate);
 
   const handleEdit = () => {
-    if (isEditing && newText.trim()) {
+    if (isEditing && newText.trim() && index !== undefined) {
       editTodo(index, newText, newDueDate);
     }
     setIsEditing(!isEditing);
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleEdit();
     }
@@ -36,7 +53,7 @@ function TodoItem({ todo, index, toggleTodo, deleteTodo, editTodo }) {
           />
           <DatePicker
             selected={newDueDate}
-            onChange={(date) => setNewDueDate(date)}
+            onChange={(date: Date | null) => setNewDueDate(date)}
             placeholderText="Select due date"
             disabled={todo.completed}
             className="p-2 text-base text-black border border-gray-300 rounded"
@@ -51,16 +68,18 @@ function TodoItem({ todo, index, toggleTodo, deleteTodo, editTodo }) {
           {todo.dueDate && <span>- Due: {format(todo.dueDate, 'MM/dd/yyyy')}</span>}
         </div>
       )}
-      <div className="todo-buttons flex gap-4 items-center">
-        {!todo.completed && (
-          <button onClick={() => setIsEditing(!isEditing)} className="bg-blue-600 text-white px-3 py-1 rounded cursor-pointer">
-            Edit
+      {!disableActions && (
+        <div className="todo-buttons flex gap-4 items-center">
+          {!todo.completed && (
+            <button onClick={() => setIsEditing(!isEditing)} className="bg-blue-600 text-white px-3 py-1 rounded cursor-pointer">
+              Edit
+            </button>
+          )}
+          <button onClick={deleteTodo} className="bg-blue-600 text-white px-3 py-1 rounded cursor-pointer">
+            Delete
           </button>
-        )}
-        <button onClick={() => deleteTodo(index)} className="bg-blue-600 text-white px-3 py-1 rounded cursor-pointer">
-          Delete
-        </button>
-      </div>
+        </div>
+      )}
     </li>
   );
 };
