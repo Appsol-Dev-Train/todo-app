@@ -66,39 +66,45 @@ function App() {
 
   return (
     <Router>
-      <div className="App">
-        <div className="sidebar">
-          <h2>Task Counter</h2>
-          <p>Total Tasks: {todos.length}</p> {/* Counter */}
-          <NavLink to="/" exact activeClassName="active" className="nav-link">
-            <span>Home</span>
-            <span className="counter">{todos.filter(todo => !todo.completed).length}</span>
+      <div className="flex h-screen font-sans text-white">
+
+        {/* Sidebar */}
+        <div className="w-64 h-full bg-gray-900 pt-5 flex flex-col items-center fixed top-0 left-0">
+          <h1 className="m-0 p-2 text-3xl text-white">Todo-List</h1>
+          
+          <NavLink to="/" exact="true" className={({ isActive }) => (isActive ? 'p-4 text-white text-left w-[230px] flex items-center bg-gray-700' : 'p-4 text-white text-left w-[230px] flex items-center hover:bg-gray-700')}>
+            <span>Tasks</span>
+            <span className="bg-blue-600 rounded-full px-2 py-1 ml-auto">{todos.filter(todo => !todo.completed).length}</span>
           </NavLink>
-          <NavLink to="/completed" activeClassName="active" className="nav-link">
+          <NavLink to="/completed" className={({ isActive }) => (isActive ? 'p-4 text-white text-left w-[230px] flex items-center bg-gray-700' : 'p-4 text-white text-left w-[230px] flex items-center hover:bg-gray-700')}>
             <span>Completed Tasks</span>
-            <span className="counter">{todos.filter(todo => todo.completed).length}</span>
+            <span className="bg-blue-600 rounded-full px-2 py-1 ml-auto">{todos.filter(todo => todo.completed).length}</span>
           </NavLink>
         </div>
-        <div className="content">
+
+        {/* Main Content */}
+        <div className="ml-64 flex-grow bg-cover bg-no-repeat" style={{ backgroundImage: "url('/background.jpg')" }}>
           <Routes>
             <Route
               path="/"
               element={
                 <div>
-                  <h1>To-Do List</h1>
-                  <form onSubmit={addTodo}>
+                  <h1 className="text-3xl pt-3 pl-3 mb-4 text-black">My Day</h1>
+                  <form onSubmit={addTodo} className="mb-5 flex">
                     <input
                       type="text"
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
                       placeholder="Add a new task"
+                      className="p-2 w-3/5 text-lg text-black border border-gray-300 rounded"
                     />
                     <DatePicker
                       selected={dueDate}
                       onChange={(date) => setDueDate(date)}
                       placeholderText="Select due date"
+                      className="p-2 text-lg text-black border border-gray-300 rounded ml-2"
                     />
-                    <button type="submit">Add</button>
+                    <button type="submit" className="p-2 text-lg ml-2 cursor-pointer bg-blue-600 text-white rounded">Add</button>
                   </form>
                   <TodoList todos={todos} toggleTodo={toggleTodo} deleteTodo={deleteTodo} editTodo={editTodo} />
                 </div>
