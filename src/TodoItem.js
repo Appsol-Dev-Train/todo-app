@@ -32,14 +32,14 @@ function TodoItem({ todo, index, toggleTodo, deleteTodo, editTodo }) {
             onKeyPress={handleKeyPress}
             autoFocus
             disabled={todo.completed}
-            className="p-2 text-base border border-gray-300 rounded"
+            className="p-2 text-base text-black border border-gray-300 rounded"
           />
           <DatePicker
             selected={newDueDate}
             onChange={(date) => setNewDueDate(date)}
             placeholderText="Select due date"
             disabled={todo.completed}
-            className="p-2 text-base border border-gray-300 rounded"
+            className="p-2 text-base text-black border border-gray-300 rounded"
           />
           <button onClick={handleEdit} className="bg-blue-600 text-white px-3 py-1 rounded cursor-pointer">
             {isEditing ? 'Save' : 'Edit'}
